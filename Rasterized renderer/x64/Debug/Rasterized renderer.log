@@ -1,4 +1,32 @@
 ﻿C:\VS2022\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(514,5): warning MSB8028: 中间目录(x64\Debug\)包含从另一个项目(Rasterized renderer.vcxproj)共享的文件。   这会导致错误的清除和重新生成行为。
+  Component.cpp
+D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\Half.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\BFloat16.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\GenericPacketMathFunctions.h(676,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  GameObject.cpp
+D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\Half.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\BFloat16.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\GenericPacketMathFunctions.h(676,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Light.h(8): warning C4091: “static ”: 没有声明变量时忽略“Light::LightType”的左侧
+  IShader.cpp
+D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\Half.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\BFloat16.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\GenericPacketMathFunctions.h(676,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Light.h(8): warning C4091: “static ”: 没有声明变量时忽略“Light::LightType”的左侧
+  Material.cpp
+D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\Half.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\BFloat16.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\GenericPacketMathFunctions.h(676,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Light.h(8): warning C4091: “static ”: 没有声明变量时忽略“Light::LightType”的左侧
+  Mesh.cpp
+D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\Half.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\BFloat16.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\GenericPacketMathFunctions.h(676,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+  MyMath.cpp
+D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\Half.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\BFloat16.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\GenericPacketMathFunctions.h(676,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Light.h(8): warning C4091: “static ”: 没有声明变量时忽略“Light::LightType”的左侧
   Renderer.cpp
 D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\Half.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
 D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\BFloat16.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
@@ -7,18 +35,23 @@ D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Light.h(8): wa
 D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Camera.h(6,31): warning C4305: “初始化”: 从“double”到“const float”截断
 D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(16,139): warning C4244: “初始化”: 从“int”转换到“float”，可能丢失数据
 D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(72,38): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(228,61): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(228,49): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(228,37): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(228,25): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(231,61): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(231,49): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(231,37): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(231,25): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(232,61): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(232,49): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(232,37): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
-D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(232,25): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(279,61): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(279,49): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(279,37): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(279,25): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(282,61): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(282,49): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(282,37): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(282,25): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(283,61): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(283,49): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(283,37): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(283,25): warning C4244: “参数”: 从“double”转换到“int”，可能丢失数据
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(335,24): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(335,21): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(337,18): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(337,15): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Renderer.cpp(335,59): warning C4390: “;”: 找到空的受控语句；这是否是有意的?
   源.cpp
 D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\Half.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
 D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\BFloat16.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失

@@ -49,3 +49,14 @@ void MyMath::Bresenham(int x0, int y0, int x1, int y1, Buffer<vector3>* frame_bu
 		if (e2 < dy) { erro += dx; y0 += sy; }
 	}
 }
+
+MyMath::barycoord MyMath::barycentric(const vector2& A, const vector2& B, const vector2& C, const vector2& P)
+{
+	// from https://zhuanlan.zhihu.com/p/65495373
+	Eigen::Vector3f v1(B.x - A.x, C.x - A.x, A.x - P.x);
+	Eigen::Vector3f v2(B.y - A.y, C.y - A.y, A.y - P.y);
+	auto u = v1.cross(v2);
+	
+	// aAB + bAC + cPA = 0 => P = (1 - a/c - b/c)A + (a/c)B + (b/c)C
+	return {(1 - (u.x() + u.y()) / u.z()), u.x() / u.z(), u.y() / u.z()};
+}

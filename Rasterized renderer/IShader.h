@@ -8,6 +8,7 @@
 #include "Resource.h"
 #include "Mesh.h"
 #include "Color.h"
+#include "MyMath.h"
 
 struct VertexOut
 {
@@ -15,6 +16,28 @@ struct VertexOut
 	Eigen::Vector3f worldPos;
 	Eigen::Vector3f normal;
 	Eigen::Vector2f uv;
+
+	VertexOut operator*(const float weight)
+	{
+		return VertexOut
+		{
+			this->ScreenPos * weight,
+			this->worldPos * weight,
+			this->normal * weight,
+			this->uv * weight
+		};
+	}
+
+	VertexOut operator+(const VertexOut& other)
+	{
+		return VertexOut
+		{
+			this->ScreenPos + other.ScreenPos,
+			this->worldPos + other.worldPos,
+			this->normal + other.normal,
+			this->uv + other.uv
+		};
+	}
 };
 
 class Shader
@@ -22,7 +45,7 @@ class Shader
 public:
 	Shader() = default;
 	virtual VertexOut* VS(vertex v) { return new VertexOut(); }
-	virtual Color PS(VertexOut in) { return Color(0); }
+	virtual Color PS(VertexOut in) { return {}; }
 	virtual void UpdateCbuffer(const Cbuffer cbuffer) {}
 	virtual void UpdateObjBuffer(const ObjBuffer objbuffer) {}
 protected:

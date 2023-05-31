@@ -33,20 +33,18 @@ private:
 	void DrawIndexdInstance(const Mesh& mesh, const Material& mat); // Draw Call
 	void OutPut();
 
-	void VertexShader();	// 顶点着色器
 	void ShadowReceive();	// 阴影收集
-	void Rasterlize();		// 光栅化
-	void FragmentShader();	// 片元着色器
 	
 	bool CvvCull(const Eigen::Vector4f v, Camera camera);
 	void ProjDivid(Eigen::Vector4f& screenPos);
 	void Ndc2Screen(Eigen::Vector4f& screenPos, Eigen::Matrix4f screenMatrix);
 	bool Zwrite_test(int x, int y, float depth);
+	bool InsideTriangle(float x, float y, const std::vector<Eigen::Vector3f>& tri);
 
-	void SetPixel();
+	void SetPixel(int x, int y, Color color);
 	void DrawLine(vector2 v1, vector2 v2, vector2 v3);
 	void DrawPoint(vector2 v1, vector2 v2, vector2 v3);
-	void DrawTriangle(VertexOut* v1, VertexOut* v2, VertexOut* v3);
+	void DrawTriangle(VertexOut* v1, VertexOut* v2, VertexOut* v3, Shader* shader);
 	void DrawPrimitive();
 
 	void CpuCullAndUpdateObjBuffers();

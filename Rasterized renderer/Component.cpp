@@ -14,8 +14,9 @@ Component::~Component()
 {
 }
 
-Eigen::Matrix4f Component::GetWorldMatrix() const
+Eigen::Matrix4f Component::GetWorldMatrix()
 {
+	UpdateMatrix();
 	return WorldMatrix;
 }
 

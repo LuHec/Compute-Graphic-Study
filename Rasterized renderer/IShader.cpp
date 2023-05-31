@@ -15,7 +15,10 @@ VertexOut* PhongShader::VS(vertex v)
 
 Color PhongShader::PS(VertexOut in)
 {
-    return Color();
+    Color col;
+    auto normal = in.normal.normalized() * 0.5 + Eigen::Vector3f(1, 1, 1);
+    col = { normal.x() * 255, normal.y() * 255, normal.z() * 255, 1};
+    return col;
 }
 
 

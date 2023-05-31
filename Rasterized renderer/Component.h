@@ -10,7 +10,7 @@ public:
 	Component(Transform trans);
 	~Component();
 
-	Eigen::Matrix4f GetWorldMatrix() const;
+	Eigen::Matrix4f GetWorldMatrix();
 
 	Transform transform;
 	
