@@ -127,14 +127,16 @@ void Renderer::DrawInstanceIndexd(const Mesh& mesh, const Material& mat)
 	}
 
 	// π‚’§ªØ
+	int cnt = 0;
 	for (int i = 0; i < indices_out.size(); i += 3)
 	{
-		/*DrawLine
+		cnt++;
+		DrawLine
 		(
 			{ vouts[indices[i]].ScreenPos.x(), vouts[indices[i]].ScreenPos.y() },
 			{ vouts[indices[i + 1]].ScreenPos.x(), vouts[indices[i + 1]].ScreenPos.y() },
 			{ vouts[indices[i + 2]].ScreenPos.x(), vouts[indices[i + 2]].ScreenPos.y() }
-		);*/
+		);
 
 		DrawTriangle(vouts[indices[i]], vouts[indices[i+1]], vouts[indices[i + 2]], shader);
 
@@ -145,6 +147,7 @@ void Renderer::DrawInstanceIndexd(const Mesh& mesh, const Material& mat)
 			{ vouts[indices[i + 2]].ScreenPos.x(), vouts[indices[i + 2]].ScreenPos.y() }
 		);*/
 	}
+	std::cout << "faces : " << cnt << std::endl;
 }
 
 void Renderer::OutPut()

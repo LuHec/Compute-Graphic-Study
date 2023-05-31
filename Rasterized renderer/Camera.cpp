@@ -99,7 +99,7 @@ void Camera::SetScreen()
 	// 暂定，网上看到的矩阵有z轴的变化，我暂时没看出来原因
 	m_screen <<
 		width / 2  , 0			, 0	, transform.position.x() + width / 2,
-		0		   , -height / 2 , 0	, transform.position.y() + height / 2,
+		0		   , height / 2 , 0	, transform.position.y() + height / 2,
 		0		   , 0			, 1	, 0         ,	
 		0		   , 0			, 0	, 1         ;
 }
