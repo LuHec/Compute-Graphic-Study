@@ -17,7 +17,7 @@ struct VertexOut
 	Eigen::Vector3f normal;
 	Eigen::Vector2f uv;
 
-	VertexOut operator*(const float weight)
+	VertexOut operator*(const float weight) const
 	{
 		return VertexOut
 		{
@@ -28,7 +28,7 @@ struct VertexOut
 		};
 	}
 
-	VertexOut operator+(const VertexOut& other)
+	VertexOut operator+(const VertexOut& other) const
 	{
 		return VertexOut
 		{
@@ -44,7 +44,7 @@ class Shader
 {
 public:
 	Shader() = default;
-	virtual VertexOut* VS(vertex v) { return new VertexOut(); }
+	virtual VertexOut VS(vertex v) { return VertexOut(); }
 	virtual Color PS(VertexOut in) { return {}; }
 	virtual void UpdateCbuffer(const Cbuffer cbuffer) {}
 	virtual void UpdateObjBuffer(const ObjBuffer objbuffer) {}
@@ -60,7 +60,7 @@ public:
 	PhongShader() = default;
 	~PhongShader() = default;
 
-	virtual VertexOut* VS(vertex v) override;
+	virtual VertexOut VS(vertex v) override;
 	virtual Color PS(VertexOut in) override;
 	virtual void UpdateCbuffer(const Cbuffer cbuffer) override
 	{
@@ -82,18 +82,3 @@ private:
 		
 	};
 };
-
-//void PhongShader::UpdateCbuffer(const Cbuffer cbuffer)
-//{
-//	this->cbuffer.CameraPos = cbuffer.CameraPos;
-//	this->cbuffer.ProjectMatrix = cbuffer.ProjectMatrix;
-//	this->cbuffer.ScreenMatrix = cbuffer.ScreenMatrix;
-//	this->cbuffer.ViewMatrix = cbuffer.ViewMatrix;
-//	this->cbuffer.light = cbuffer.light;
-//}
-//
-//void PhongShader::UpdateObjBuffer(const ObjBuffer objbuffer)
-//{
-//	obuffer.WorldMatrix = objbuffer.WorldMatrix;
-//	obuffer.InvTransWorldMatrix = obuffer.WorldMatrix.inverse().transpose();
-//}

@@ -1,5 +1,7 @@
 #include "Renderer.h"
 
+// 函数部分
+
 void Renderer::Draw()
 {
 	Update();
@@ -40,13 +42,10 @@ void Renderer::Update()
 
 void Renderer::UpdateConstantBuffer()
 {
-	globalCbuffer =
-	{
-		camera.GetViewMatrix(),
-		camera.GetProjMatrix(),
-		camera.GetScreenMatrix(),
-		camera.transform.position
-	};
+	globalCbuffer.ViewMatrix = camera.GetViewMatrix();
+	globalCbuffer.ProjectMatrix = camera.GetProjMatrix();
+	globalCbuffer.ScreenMatrix = camera.GetScreenMatrix();
+	globalCbuffer.CameraPos = camera.transform.position;
 }
 
 void Renderer::UpdateObjectBuffer(GameObject* gameobject)
@@ -59,25 +58,26 @@ void Renderer::UpdateObjectBuffer(GameObject* gameobject)
 
 void Renderer::DrawRenderItems()
 {
-	for (auto& obj : renderList)
+	for (const GameObject* obj : renderList)
 	{
-		DrawIndexdInstance(obj->mesh, obj->material);
+		DrawInstanceIndexd(obj->mesh, obj->material);
 	}
 }
 
 // TODO
 // 管线流程开画
-void Renderer::DrawIndexdInstance(const Mesh& mesh, const Material& mat)
+void Renderer::DrawInstanceIndexd(const Mesh& mesh, const Material& mat)
 {
+	// 准备顶点和索引
 	int indexCount = mesh.indices.size();
 	Shader* shader = mat.shader;
-	std::vector<VertexOut*> vouts;
+	std::vector<VertexOut> vouts;
 	vouts.reserve(mesh.vertices.size());
 	std::vector<int> indices_out;
 	indices_out.reserve(indexCount);
 
-	auto& vertices = mesh.vertices;
-	auto& indices = mesh.indices;
+	const std::vector<vertex>& vertices = mesh.vertices;
+	const std::vector<int>& indices = mesh.indices;
 
 	// 调用shader顶点着色器，然后进行齐次除法、变换到屏幕空间
 	for (int i = 0; i < indexCount; i += 3)
@@ -86,18 +86,18 @@ void Renderer::DrawIndexdInstance(const Mesh& mesh, const Material& mat)
 		auto v2 = shader->VS(vertices[indices[i + 1]]);
 		auto v3 = shader->VS(vertices[indices[i + 2]]);
 		
-		if (CvvCull(v1->ScreenPos, camera)) continue;
-		if (CvvCull(v2->ScreenPos, camera)) continue;
-		if (CvvCull(v3->ScreenPos, camera)) continue;
+		if (CvvCull(v1.ScreenPos, camera)) continue;
+		if (CvvCull(v2.ScreenPos, camera)) continue;
+		if (CvvCull(v3.ScreenPos, camera)) continue;
 				
-		ProjDivid(v1->ScreenPos);
-		Ndc2Screen(v1->ScreenPos, camera.GetScreenMatrix());
+		ProjDivid(v1.ScreenPos);
+		Ndc2Screen(v1.ScreenPos, camera.GetScreenMatrix());
 
-		ProjDivid(v2->ScreenPos);
-		Ndc2Screen(v2->ScreenPos, camera.GetScreenMatrix());
+		ProjDivid(v2.ScreenPos);
+		Ndc2Screen(v2.ScreenPos, camera.GetScreenMatrix());
 
-		ProjDivid(v3->ScreenPos);
-		Ndc2Screen(v3->ScreenPos, camera.GetScreenMatrix());
+		ProjDivid(v3.ScreenPos);
+		Ndc2Screen(v3.ScreenPos, camera.GetScreenMatrix());
 
 		vouts.emplace_back(v1);
 		vouts.emplace_back(v2); 
@@ -119,9 +119,9 @@ void Renderer::DrawIndexdInstance(const Mesh& mesh, const Material& mat)
 		std::cout << "indices_out.size() : " << indices_out.size() << std::endl;
 		DrawLine
 		(
-			{ vouts[indices[i]]->ScreenPos.x(), vouts[indices[i]]->ScreenPos.y() },
-			{ vouts[indices[i + 1]]->ScreenPos.x(), vouts[indices[i + 1]]->ScreenPos.y() },
-			{ vouts[indices[i + 2]]->ScreenPos.x(), vouts[indices[i + 2]]->ScreenPos.y() }
+			{ vouts[indices[i]].ScreenPos.x(), vouts[indices[i]].ScreenPos.y() },
+			{ vouts[indices[i + 1]].ScreenPos.x(), vouts[indices[i + 1]].ScreenPos.y() },
+			{ vouts[indices[i + 2]].ScreenPos.x(), vouts[indices[i + 2]].ScreenPos.y() }
 		);
 
 		DrawTriangle(vouts[indices[i]], vouts[indices[i+1]], vouts[indices[i + 2]], shader);
@@ -130,7 +130,10 @@ void Renderer::DrawIndexdInstance(const Mesh& mesh, const Material& mat)
 
 void Renderer::OutPut()
 {
-	std::ofstream fout("result.ppm");
+	std::string cbufferOut = output_base_path + "result.ppm";
+	std::string zbufferOut = output_base_path + "depth.ppm";
+	std::ofstream fout(cbufferOut);
+	std::ofstream zout(zbufferOut);
 
 	fout << "P3\n"
 		<< width << ' ' << height << "\n255\n";
@@ -142,13 +145,10 @@ void Renderer::OutPut()
 		{
 			auto color = (*frame_buffer)[i][j];
 			fout << (int)color.x << ' ' << (int)color.y << ' ' << (int)color.z << '\n';
-			//std::cout << "Drawing" << std::endl;
 		}
 	}
 
 	std::cout << "end" << std::endl;
-
-	std::ofstream zout("depth.ppm");
 
 	zout << "P3\n"
 		<< width << ' ' << height << "\n255\n";
@@ -159,7 +159,6 @@ void Renderer::OutPut()
 		{
 			auto z = (*z_buffer)[i][j];
 			zout <<  int(z * 255) << ' ' << 0 << ' ' << 0 << '\n';
-			//std::cout << "Drawing z : " << z << std::endl;
 		}
 	}
 
@@ -206,7 +205,7 @@ bool Renderer::CvvCull(const Eigen::Vector4f v, Camera camera)
 	float z = v.z();
 	float w = v.w();
 
-	std::cout << "cvvcull :" << "x = " << x << " y = " << y << " z = " << z << " w = " << w << std::endl;
+	//std::cout << "cvvcull :" << "x = " << x << " y = " << y << " z = " << z << " w = " << w << std::endl;
 
 	if (x >= -w && x <= w) 
 		return true;
@@ -222,7 +221,7 @@ void Renderer::ProjDivid(Eigen::Vector4f& screenPos)
 	screenPos.x() /= screenPos.w();
 	screenPos.y() /= screenPos.w();
 	screenPos.z() /= screenPos.w();
-	std::cout << "NDCPos.x = " << screenPos.x() << " NDCPos.y = " << screenPos.y() << " NDCPos.z = " << screenPos.z() << " NDCPos.w = " << screenPos.w() << std::endl;
+	//std::cout << "NDCPos.x = " << screenPos.x() << " NDCPos.y = " << screenPos.y() << " NDCPos.z = " << screenPos.z() << " NDCPos.w = " << screenPos.w() << std::endl;
 }
 
 void Renderer::Ndc2Screen(Eigen::Vector4f& screenPos, Eigen::Matrix4f screenMatrix)
@@ -233,14 +232,14 @@ void Renderer::Ndc2Screen(Eigen::Vector4f& screenPos, Eigen::Matrix4f screenMatr
 	std::cout << "NDC screenMatrix:\n" << screenMatrix << std::endl;
 	screenPos = screenMatrix * screenPos;
 	screenPos.w() = w;
-	std::cout << "screenPos.x = " << screenPos.x() << " screenPos.y = " << screenPos.y() << " screenPos.z = " << screenPos.z() << " screenPos.w = " << screenPos.w() << std::endl;
+	//std::cout << "screenPos.x = " << screenPos.x() << " screenPos.y = " << screenPos.y() << " screenPos.z = " << screenPos.z() << " screenPos.w = " << screenPos.w() << std::endl;
 }
 
 bool Renderer::Zwrite_test(int x, int y, float depth)
 {
 	depth *= -1;
 	// depth是负的，要转成正的
-	std::cout << "depth : " << depth << std::endl;
+	//std::cout << "depth : " << depth << std::endl;
 	if (depth < (*z_buffer)[x][y])
 	{
 		(*z_buffer)[x][y] = depth;
@@ -286,9 +285,9 @@ void Renderer::DrawLine(vector2 v1, vector2 v2, vector2 v3)
 
 void Renderer::DrawPoint(vector2 v1, vector2 v2, vector2 v3)
 {
-	std::cout << "v1 = " << (int)v1.x << ',' << v1.y << std::endl;
-	std::cout << "v2 = " << (int)v2.x << ',' << v2.y << std::endl;
-	std::cout << "v3 = " << (int)v3.x << ',' << v3.y << std::endl;
+	//std::cout << "v1 = " << (int)v1.x << ',' << v1.y << std::endl;
+	//std::cout << "v2 = " << (int)v2.x << ',' << v2.y << std::endl;
+	//std::cout << "v3 = " << (int)v3.x << ',' << v3.y << std::endl;
 	(*frame_buffer)[(int)v1.x][(int)v1.y] = { 255, 255, 255 };
 	(*frame_buffer)[(int)v2.x][(int)v2.y] = { 255, 255, 255 };
 	(*frame_buffer)[(int)v3.x][(int)v3.y] = { 255, 255, 255 };
@@ -297,24 +296,20 @@ void Renderer::DrawPoint(vector2 v1, vector2 v2, vector2 v3)
 // TODO
 // 三角形遍历
 // 插值
-// ztest
+// z test
 // 写入
-void Renderer::DrawTriangle(VertexOut* v1, VertexOut* v2, VertexOut* v3, Shader* shader)
+void Renderer::DrawTriangle(const VertexOut& v1, const VertexOut& v2, const VertexOut& v3, Shader* shader)
 {
-	//Eigen::Vector3f p1(v1->ScreenPos.x(), v1->ScreenPos.y(), v1->ScreenPos.z());
-	//Eigen::Vector3f p2(v2->ScreenPos.x(), v2->ScreenPos.y(), v2->ScreenPos.z());
-	//Eigen::Vector3f p3(v2->ScreenPos.x(), v3->ScreenPos.y(), v3->ScreenPos.z());
-
-	auto p1 = v1->ScreenPos.head<3>();
-	auto p2 = v2->ScreenPos.head<3>();
-	auto p3 = v3->ScreenPos.head<3>();
+	Eigen::Vector3f p1 = v1.ScreenPos.head<3>();
+	Eigen::Vector3f p2 = v2.ScreenPos.head<3>();
+	Eigen::Vector3f p3 = v3.ScreenPos.head<3>();
 
 	std::vector<Eigen::Vector3f> tri;
 	tri.emplace_back(p1);
 	tri.emplace_back(p2);
 	tri.emplace_back(p3);
 	
-	// Boundingbox
+	// Bounding box
 	float t = std::ceil(fmax(fmax(p1.y(), p2.y()), p3.y()));
 	float b = std::floor(fmin(fmin(p1.y(), p2.y()), p3.y()));
 	float l = std::floor(fmin(fmin(p1.x(), p2.x()), p3.x()));
@@ -330,8 +325,10 @@ void Renderer::DrawTriangle(VertexOut* v1, VertexOut* v2, VertexOut* v3, Shader*
 				vector2 B{ p2.x(), p2.y() };
 				vector2 C{ p3.x(), p3.y() };
 				vector2 P{ x, y };
+
+				// 重心插值
 				auto bary = MyMath::barycentric(A, B, C, P);
-				VertexOut out_interpolated = *v1 * bary.alpha + *v2 * bary.beta + *v3 * bary.gamma;
+				VertexOut out_interpolated = v1 * bary.alpha + v2 * bary.beta + v3 * bary.gamma;
 				if (Zwrite_test(x, y, out_interpolated.ScreenPos.z()));
 				{
 					SetPixel(x, y, shader->PS(out_interpolated));
@@ -346,9 +343,13 @@ void Renderer::DrawTriangle(VertexOut* v1, VertexOut* v2, VertexOut* v3, Shader*
 // 视椎体剔除
 void Renderer::CpuCullAndUpdateObjBuffers()
 {
-	for (auto& o : objList)
+	for (GameObject* o : objList)
 	{
 		UpdateObjectBuffer(o);
 		renderList.emplace_back(o);
 	}
 }
+
+
+
+const std::string Renderer::output_base_path = "output/";

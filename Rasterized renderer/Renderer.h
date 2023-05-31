@@ -30,7 +30,7 @@ private:
 	void UpdateConstantBuffer();
 	void UpdateObjectBuffer(GameObject*);
 	void DrawRenderItems(); // 逐个绘制items
-	void DrawIndexdInstance(const Mesh& mesh, const Material& mat); // Draw Call
+	void DrawInstanceIndexd(const Mesh& mesh, const Material& mat); // Draw Call
 	void OutPut();
 
 	void ShadowReceive();	// 阴影收集
@@ -44,10 +44,14 @@ private:
 	void SetPixel(int x, int y, Color color);
 	void DrawLine(vector2 v1, vector2 v2, vector2 v3);
 	void DrawPoint(vector2 v1, vector2 v2, vector2 v3);
-	void DrawTriangle(VertexOut* v1, VertexOut* v2, VertexOut* v3, Shader* shader);
+	void DrawTriangle(const VertexOut& v1, const VertexOut& v2, const VertexOut& v3, Shader* shader);
 	void DrawPrimitive();
 
 	void CpuCullAndUpdateObjBuffers();
+
+private:
+	void SetCamera();
+	void SetBuffers();
 
 // Render Members
 private:
@@ -72,7 +76,6 @@ private:
 	std::vector<GameObject*> objList;
 	std::vector<GameObject*> renderList;
 
-private:
-	void SetCamera();
-	void SetBuffers();
+public:
+	static const std::string output_base_path;
 };
