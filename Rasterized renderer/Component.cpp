@@ -1,4 +1,5 @@
 #include "Component.h"
+#include <iostream>
 
 Component::Component()
 {
@@ -32,6 +33,9 @@ void Component::UpdateMatrix()
 		Eigen::AngleAxisf(Eurler[2], Eigen::Vector3f::UnitZ()) *
 		Eigen::AngleAxisf(Eurler[1], Eigen::Vector3f::UnitY()) *
 		Eigen::AngleAxisf(Eurler[0], Eigen::Vector3f::UnitX());
+	std::cout << 
+		"rotation matrix :\n" <<
+		rotation_3 << std::endl;
 
 	Eigen::Matrix4f rotation;
 	rotation <<

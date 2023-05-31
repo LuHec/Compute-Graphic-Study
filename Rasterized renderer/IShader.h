@@ -46,8 +46,8 @@ public:
 	Shader() = default;
 	virtual VertexOut VS(vertex v) { return VertexOut(); }
 	virtual Color PS(VertexOut in) { return {}; }
-	virtual void UpdateCbuffer(const Cbuffer cbuffer) {}
-	virtual void UpdateObjBuffer(const ObjBuffer objbuffer) {}
+	virtual void UpdateCbuffer(const Cbuffer& cbuffer) {}
+	virtual void UpdateObjBuffer(const ObjBuffer& objbuffer) {}
 protected:
 	ObjBuffer obuffer;
 	Cbuffer cbuffer;
@@ -62,7 +62,7 @@ public:
 
 	virtual VertexOut VS(vertex v) override;
 	virtual Color PS(VertexOut in) override;
-	virtual void UpdateCbuffer(const Cbuffer cbuffer) override
+	virtual void UpdateCbuffer(const Cbuffer& cbuffer) override
 	{
 		this->cbuffer.CameraPos = cbuffer.CameraPos;
 		this->cbuffer.ProjectMatrix = cbuffer.ProjectMatrix;
@@ -70,7 +70,7 @@ public:
 		this->cbuffer.ViewMatrix = cbuffer.ViewMatrix;
 		this->cbuffer.light = cbuffer.light;
 	}
-	virtual void UpdateObjBuffer(const ObjBuffer objbuffer) override
+	virtual void UpdateObjBuffer(const ObjBuffer& objbuffer) override
 	{
 		obuffer.WorldMatrix = objbuffer.WorldMatrix;
 		obuffer.InvTransWorldMatrix = obuffer.WorldMatrix.inverse().transpose();

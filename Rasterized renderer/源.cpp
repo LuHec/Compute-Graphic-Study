@@ -8,9 +8,9 @@ GameObject* AddTraingle()
 	GameObject* gameobject = new GameObject();
 	auto& mesh = gameobject->mesh;
 
-	mesh.vertices.emplace_back(Eigen::Vector3f(0, 1, 0));
-	mesh.vertices.emplace_back(Eigen::Vector3f(-1, 0, 0));
-	mesh.vertices.emplace_back(Eigen::Vector3f(1, 0, 0));
+	mesh.vertices.emplace_back(Eigen::Vector3f(0, 3, 0));
+	mesh.vertices.emplace_back(Eigen::Vector3f(-1, 1, 0));
+	mesh.vertices.emplace_back(Eigen::Vector3f(1, 1, 0));
 
 	auto& vertices = mesh.vertices;
 	vertices[0].normal = { 0,0, 1 };
@@ -20,6 +20,11 @@ GameObject* AddTraingle()
 	mesh.indices.emplace_back(0);
 	mesh.indices.emplace_back(1);
 	mesh.indices.emplace_back(2);
+
+	auto& rotation = gameobject->component.transform.rotation;
+	rotation.x() = 0;
+	rotation.y() = 0;
+	rotation.z() = 0;
 
 	return gameobject;
 }
@@ -100,8 +105,8 @@ GameObject* AddCube()
 
 	auto& rotation = gameobject->component.transform.rotation;
 	rotation.x() = 0;
-	rotation.y() = 45;
-	rotation.z() = 45;
+	rotation.y() = 90;
+	rotation.z() = 0;
 
 	return gameobject;
 }
@@ -111,7 +116,8 @@ int main()
 {
 	Renderer renderer(400, 400, 0.5f, 1000.0f, 60.0f);
 
-	//renderer.LoadObject(AddTraingle());
+	renderer.LoadObject(AddTraingle());
 	renderer.LoadObject(AddCube());
+	renderer.SetCamera(.0f, .0f, -10.0f);
 	renderer.Draw();
 }

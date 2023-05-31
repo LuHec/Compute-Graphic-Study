@@ -18,7 +18,8 @@ Color PhongShader::PS(VertexOut in)
     Color col;
     auto normal = (in.normal.normalized() + Eigen::Vector3f(1, 1, 1)) / 2;
 
-    col = { normal.x() * 255, normal.y() * 255, normal.z() * 255, 1};
+    //col = { normal.x() * 255, normal.y() * 255, normal.z() * 255, 1};
+    col = { 255, 255, 255, 1 };
     return col;
 }
 

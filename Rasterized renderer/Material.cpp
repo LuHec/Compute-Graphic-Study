@@ -5,12 +5,12 @@ Material::Material()
 	shader = new PhongShader();
 }
 
-void Material::UpdateObjBuffer(ObjBuffer obuffer)
+void Material::UpdateObjBuffer(const ObjBuffer& obuffer)
 {
 	shader->UpdateObjBuffer(obuffer);
 }
 
-void Material::UpdateCBuffer(Cbuffer cbuffer)
+void Material::UpdateCBuffer(const Cbuffer& cbuffer)
 {
 	shader->UpdateCbuffer(cbuffer);
 }

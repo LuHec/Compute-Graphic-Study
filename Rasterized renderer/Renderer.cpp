@@ -10,6 +10,13 @@ void Renderer::Draw()
 	OutPut();
 }
 
+void Renderer::SetCamera(const float x, const float y, const float z)
+{
+	camera.transform.position.x() = x;
+	camera.transform.position.y() = y;
+	camera.transform.position.z() = z;
+}
+
 Renderer::Renderer() : width(400), height(400), nearPlane(0.5f), farPlane(1000.0f), aspect(1) 
 {
 	Init();
@@ -72,13 +79,14 @@ void Renderer::DrawInstanceIndexd(const Mesh& mesh, const Material& mat)
 	int indexCount = mesh.indices.size();
 	Shader* shader = mat.shader;
 	std::vector<VertexOut> vouts;
-	vouts.reserve(mesh.vertices.size());
+	//vouts.reserve(mesh.vertices.size());
 	std::vector<int> indices_out;
-	indices_out.reserve(indexCount);
+	//indices_out.reserve(indexCount);
 
 	const std::vector<vertex>& vertices = mesh.vertices;
 	const std::vector<int>& indices = mesh.indices;
 
+	// 三角形面，三个一组
 	// 调用shader顶点着色器，然后进行齐次除法、变换到屏幕空间
 	for (int i = 0; i < indexCount; i += 3)
 	{
@@ -86,17 +94,17 @@ void Renderer::DrawInstanceIndexd(const Mesh& mesh, const Material& mat)
 		auto v2 = shader->VS(vertices[indices[i + 1]]);
 		auto v3 = shader->VS(vertices[indices[i + 2]]);
 		
-		if (CvvCull(v1.ScreenPos, camera)) continue;
-		if (CvvCull(v2.ScreenPos, camera)) continue;
-		if (CvvCull(v3.ScreenPos, camera)) continue;
+		//if (CvvCull(v1.ScreenPos, camera)) continue;
+		//if (CvvCull(v2.ScreenPos, camera)) continue;
+		//if (CvvCull(v3.ScreenPos, camera)) continue;
+		if (CvvCull(v1.ScreenPos, camera) || CvvCull(v2.ScreenPos, camera) || CvvCull(v3.ScreenPos, camera)) continue;
 				
 		ProjDivid(v1.ScreenPos);
-		Ndc2Screen(v1.ScreenPos, camera.GetScreenMatrix());
-
 		ProjDivid(v2.ScreenPos);
-		Ndc2Screen(v2.ScreenPos, camera.GetScreenMatrix());
-
 		ProjDivid(v3.ScreenPos);
+
+		Ndc2Screen(v1.ScreenPos, camera.GetScreenMatrix());
+		Ndc2Screen(v2.ScreenPos, camera.GetScreenMatrix());
 		Ndc2Screen(v3.ScreenPos, camera.GetScreenMatrix());
 
 		vouts.emplace_back(v1);
@@ -108,23 +116,34 @@ void Renderer::DrawInstanceIndexd(const Mesh& mesh, const Material& mat)
 	}
 
 	std::cout << "index count: " << indexCount << std::endl;
+	std::cout << "indices count: " << indices.size() << std::endl;
+
+	for (auto& v : vouts)
+	{
+		std::cout << "v =(" << v.worldPos.x() << ", " << v.worldPos.y() << ", " << v.worldPos.z() << ")" << std::endl;
+		std::cout << "v =(" << v.ScreenPos.x() << "," << v.ScreenPos.y() << ")" << std::endl;
+		std::cout << "------------------ padding ------------------" << std::endl;
+		//DrawPoint({ v.ScreenPos.x(), v.ScreenPos.y()});
+	}
 
 	// 光栅化
-	// TODO
-	// 三角形设置
-	// 三角形遍历
-	// 画
 	for (int i = 0; i < indices_out.size(); i += 3)
 	{
-		std::cout << "indices_out.size() : " << indices_out.size() << std::endl;
-		DrawLine
+		/*DrawLine
 		(
 			{ vouts[indices[i]].ScreenPos.x(), vouts[indices[i]].ScreenPos.y() },
 			{ vouts[indices[i + 1]].ScreenPos.x(), vouts[indices[i + 1]].ScreenPos.y() },
 			{ vouts[indices[i + 2]].ScreenPos.x(), vouts[indices[i + 2]].ScreenPos.y() }
-		);
+		);*/
 
 		DrawTriangle(vouts[indices[i]], vouts[indices[i+1]], vouts[indices[i + 2]], shader);
+
+		/*DrawPoint
+		(
+			{ vouts[indices[i]].ScreenPos.x(), vouts[indices[i]].ScreenPos.y() },
+			{ vouts[indices[i + 1]].ScreenPos.x(), vouts[indices[i + 1]].ScreenPos.y() },
+			{ vouts[indices[i + 2]].ScreenPos.x(), vouts[indices[i + 2]].ScreenPos.y() }
+		);*/
 	}
 }
 
@@ -203,17 +222,14 @@ bool Renderer::CvvCull(const Eigen::Vector4f v, Camera camera)
 	float x = v.x();
 	float y = v.y();
 	float z = v.z();
-	float w = v.w();
+	float w = abs(v.w());
 
-	//std::cout << "cvvcull :" << "x = " << x << " y = " << y << " z = " << z << " w = " << w << std::endl;
+	std::cout << "cvvcull :" << "x = " << x << " y = " << y << " z = " << z << " w = " << w << std::endl;
 
-	if (x >= -w && x <= w) 
+	if ((x < -w || x > w) || (y < -w || y > w) || (z < -w || z > w))
 		return true;
-	if (y >= -w && y <= w)
-		return true;
-	if (z >= -w && z <= w)
-		return true;
-	return false;
+	else
+		return false;
 }
 
 void Renderer::ProjDivid(Eigen::Vector4f& screenPos)
@@ -283,11 +299,19 @@ void Renderer::DrawLine(vector2 v1, vector2 v2, vector2 v3)
 	//MyMath::Bresenham(v3.x, v3.y, v2.x, v2.y, frame_buffer);
 }
 
+void Renderer::DrawPoint(vector2 v)
+{
+	(*frame_buffer)[(int)v.x][(int)v.y] = { 255, 255, 255 };
+}
+
 void Renderer::DrawPoint(vector2 v1, vector2 v2, vector2 v3)
 {
-	//std::cout << "v1 = " << (int)v1.x << ',' << v1.y << std::endl;
-	//std::cout << "v2 = " << (int)v2.x << ',' << v2.y << std::endl;
-	//std::cout << "v3 = " << (int)v3.x << ',' << v3.y << std::endl;
+	std::cout << "v1 = （" << (int)v1.x << ',' << v1.y << ")" << std::endl;
+	std::cout << "v2 = （" << (int)v2.x << ',' << v2.y << ")" << std::endl;
+	std::cout << "v3 = （" << (int)v3.x << ',' << v3.y << ")" << std::endl;
+
+	std::cout << "---------- padding ----------" << std::endl;
+
 	(*frame_buffer)[(int)v1.x][(int)v1.y] = { 255, 255, 255 };
 	(*frame_buffer)[(int)v2.x][(int)v2.y] = { 255, 255, 255 };
 	(*frame_buffer)[(int)v3.x][(int)v3.y] = { 255, 255, 255 };
@@ -329,6 +353,8 @@ void Renderer::DrawTriangle(const VertexOut& v1, const VertexOut& v2, const Vert
 				// 重心插值
 				auto bary = MyMath::barycentric(A, B, C, P);
 				VertexOut out_interpolated = v1 * bary.alpha + v2 * bary.beta + v3 * bary.gamma;
+
+				// 深度测试通过写入像素
 				if (Zwrite_test(x, y, out_interpolated.ScreenPos.z()));
 				{
 					SetPixel(x, y, shader->PS(out_interpolated));

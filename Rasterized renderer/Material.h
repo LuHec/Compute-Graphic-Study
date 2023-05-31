@@ -8,8 +8,8 @@ class Material
 {
 public:
 	Material();
-	void UpdateObjBuffer(ObjBuffer obuffer);
-	void UpdateCBuffer(Cbuffer cbuffer);
+	void UpdateObjBuffer(const ObjBuffer& obuffer);
+	void UpdateCBuffer(const Cbuffer& cbuffer);
 	Shader* shader = nullptr;
 	std::vector<Texture> textures;
 };

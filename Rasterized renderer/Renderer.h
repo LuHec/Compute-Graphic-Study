@@ -19,6 +19,7 @@ public:
 
 	void LoadObject(GameObject* object);		// ´«ÈëObject
 	void Draw();
+	void SetCamera(const float x, const float y, const float z);
 
 // Render Pipeline
 // Space: obj->world->view->clip->cvv->ndc->screen
@@ -43,6 +44,7 @@ private:
 
 	void SetPixel(int x, int y, Color color);
 	void DrawLine(vector2 v1, vector2 v2, vector2 v3);
+	void DrawPoint(vector2 v);
 	void DrawPoint(vector2 v1, vector2 v2, vector2 v3);
 	void DrawTriangle(const VertexOut& v1, const VertexOut& v2, const VertexOut& v3, Shader* shader);
 	void DrawPrimitive();
