@@ -212,13 +212,24 @@ void Renderer::Ndc2Screen(Eigen::Vector4f& screenPos, Eigen::Matrix4f screenMatr
 	std::cout << "screenPos.x = " << screenPos.x() << " screenPos.y = " << screenPos.y() << " screenPos.z = " << screenPos.z() << " screenPos.w = " << screenPos.w() << std::endl;
 }
 
+bool Renderer::Zwrite_test(int x, int y, float depth)
+{
+	if (depth > (*z_buffer)[x][y])
+	{
+		(*z_buffer)[x][y] = depth;
+		return true;
+	}
+
+	return false;
+}
+
 void Renderer::DrawLine(vector2 v1, vector2 v2, vector2 v3)
 {
-	MyMath::Bresenham(v1.x, v1.y, v2.x, v2.y, frame_buffer);
+	MyMath::Bresenham(v1.x + 0.5, v1.y + 0.5, v2.x + 0.5, v2.y + 0.5, frame_buffer);
 	//MyMath::Bresenham(v1.x, v1.y, v3.x, v3.y, frame_buffer);
 	//MyMath::Bresenham(v2.x, v2.y, v1.x, v1.y, frame_buffer);
-	MyMath::Bresenham(v2.x, v2.y, v3.x, v3.y, frame_buffer);
-	MyMath::Bresenham(v3.x, v3.y, v1.x, v1.y, frame_buffer);
+	MyMath::Bresenham(v2.x + 0.5, v2.y + 0.5, v3.x + 0.5, v3.y + 0.5, frame_buffer);
+	MyMath::Bresenham(v3.x + 0.5, v3.y + 0.5, v1.x + 0.5, v1.y + 0.5, frame_buffer);
 	//MyMath::Bresenham(v3.x, v3.y, v2.x, v2.y, frame_buffer);
 }
 
@@ -230,6 +241,16 @@ void Renderer::DrawPoint(vector2 v1, vector2 v2, vector2 v3)
 	(*frame_buffer)[(int)v1.x][(int)v1.y] = { 255, 255, 255 };
 	(*frame_buffer)[(int)v2.x][(int)v2.y] = { 255, 255, 255 };
 	(*frame_buffer)[(int)v3.x][(int)v3.y] = { 255, 255, 255 };
+}
+
+// TODO
+// 三角形遍历
+// 插值
+// ztest
+// 写入
+void Renderer::DrawTriangle(VertexOut* v1, VertexOut* v2, VertexOut* v3)
+{
+
 }
 
 // TODO

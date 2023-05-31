@@ -41,12 +41,12 @@ private:
 	bool CvvCull(const Eigen::Vector4f v, Camera camera);
 	void ProjDivid(Eigen::Vector4f& screenPos);
 	void Ndc2Screen(Eigen::Vector4f& screenPos, Eigen::Matrix4f screenMatrix);
-	void Zwrite_test();
+	bool Zwrite_test(int x, int y, float depth);
 
 	void SetPixel();
 	void DrawLine(vector2 v1, vector2 v2, vector2 v3);
 	void DrawPoint(vector2 v1, vector2 v2, vector2 v3);
-	void DrawTriangle();
+	void DrawTriangle(VertexOut* v1, VertexOut* v2, VertexOut* v3);
 	void DrawPrimitive();
 
 	void CpuCullAndUpdateObjBuffers();
