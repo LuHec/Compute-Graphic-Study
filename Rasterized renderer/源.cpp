@@ -104,20 +104,58 @@ GameObject* AddCube()
 	i[33] = 20; i[34] = 22; i[35] = 23;
 
 	auto& rotation = gameobject->component.transform.rotation;
-	rotation.x() = 0;
-	rotation.y() = 90;
+	rotation.x() = 45;
+	rotation.y() = 0;
 	rotation.z() = 0;
 
 	return gameobject;
 }
 
 
+GameObject* AddPyramid()
+{
+	GameObject* gameobject = new GameObject();
+	auto& mesh = gameobject->mesh;
+	auto& v = mesh.vertices;
+	auto& i = mesh.indices;
+	v.resize(5);
+	i.resize(18);
+
+	float w = 5.0f;
+	float h = 5.0f;
+
+	v[0] = vertex(-w , 0, w, 0, 0, 0);
+	v[1] = vertex(w, 0, w, 0, 0, 0);
+	v[2] = vertex(w, 0, -w, 0, 0, 0);
+	v[3] = vertex(-w, 0, -w, 0, 0, 0);
+	v[4] = vertex(0, h, 0, 0, 0, 0);
+
+	i[0] = 0; i[1] = 4; i[2] = 1;
+	i[3] = 1; i[4] = 4; i[5] = 2;
+	i[6] = 2; i[7] = 4; i[8] = 3;
+	i[9] = 3; i[10] = 4; i[11] = 0;
+	i[12] = 0; i[13] = 2; i[14] = 3;
+	i[15] = 0; i[16] = 1; i[17] = 2;
+
+	auto& rotation = gameobject->component.transform.rotation;
+	rotation.x() = 80;
+	rotation.y() = 0;
+	rotation.z() = 0;
+
+	return gameobject;
+}
+
 int main()
 {
-	Renderer renderer(400, 400, 0.5f, 1000.0f, 60.0f);
+	// 左手系，y轴向上，[-1, 1]，深度为负值
+	Renderer renderer(400, 400, 0.5f, 1000.0f, 90.0f);
 
-	renderer.LoadObject(AddTraingle());
+	//renderer.LoadObject(AddTraingle());
 	renderer.LoadObject(AddCube());
-	renderer.SetCamera(.0f, .0f, -10.0f);
+	//renderer.LoadObject(AddPyramid());
+	renderer.SetCamera(.0f, 0.0f, -10.0f);
 	renderer.Draw();
 }
+
+// TODO
+// 修复深度

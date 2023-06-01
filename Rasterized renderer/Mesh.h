@@ -14,6 +14,12 @@ struct vertex
 
 	vertex(
 		float px, float py, float pz,
+		float nx, float ny, float nz) :
+		pos(Eigen::Vector3f(px, py, pz)),
+		normal(Eigen::Vector3f(nx, ny, nz)) {}
+
+	vertex(
+		float px, float py, float pz,
 		float nx, float ny, float nz,
 		float tx, float ty, float tz,
 		float u, float v) :

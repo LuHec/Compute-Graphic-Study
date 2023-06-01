@@ -49,6 +49,7 @@ void Renderer::Update()
 
 void Renderer::UpdateConstantBuffer()
 {
+	camera.UpdateMatrix();
 	globalCbuffer.ViewMatrix = camera.GetViewMatrix();
 	globalCbuffer.ProjectMatrix = camera.GetProjMatrix();
 	globalCbuffer.ScreenMatrix = camera.GetScreenMatrix();
@@ -77,77 +78,71 @@ void Renderer::DrawInstanceIndexd(const Mesh& mesh, const Material& mat)
 {
 	// 准备顶点和索引
 	int indexCount = mesh.indices.size();
+	int vecticesCount = mesh.vertices.size();
 	Shader* shader = mat.shader;
 	std::vector<VertexOut> vouts;
-	//vouts.reserve(mesh.vertices.size());
-	std::vector<int> indices_out;
-	//indices_out.reserve(indexCount);
+	std::vector<VertexOut> projVouts;
+	//std::vector<int> indices_out;
 
 	const std::vector<vertex>& vertices = mesh.vertices;
 	const std::vector<int>& indices = mesh.indices;
 
-	// 三角形面，三个一组
-	// 调用shader顶点着色器，然后进行齐次除法、变换到屏幕空间
-	for (int i = 0; i < indexCount; i += 3)
+	// 调用shader顶点着色器,然后变换到ndc，然后到屏幕空间
+	for (const auto& v : vertices)
 	{
-		auto v1 = shader->VS(vertices[indices[i]]);
-		auto v2 = shader->VS(vertices[indices[i + 1]]);
-		auto v3 = shader->VS(vertices[indices[i + 2]]);
-		
-		//if (CvvCull(v1.ScreenPos, camera)) continue;
-		//if (CvvCull(v2.ScreenPos, camera)) continue;
-		//if (CvvCull(v3.ScreenPos, camera)) continue;
-		if (CvvCull(v1.ScreenPos, camera) || CvvCull(v2.ScreenPos, camera) || CvvCull(v3.ScreenPos, camera)) continue;
-				
-		ProjDivid(v1.ScreenPos);
-		ProjDivid(v2.ScreenPos);
-		ProjDivid(v3.ScreenPos);
+		auto vs_v = shader->VS(v);
+		vouts.emplace_back(vs_v);
 
-		Ndc2Screen(v1.ScreenPos, camera.GetScreenMatrix());
-		Ndc2Screen(v2.ScreenPos, camera.GetScreenMatrix());
-		Ndc2Screen(v3.ScreenPos, camera.GetScreenMatrix());
-
-		vouts.emplace_back(v1);
-		vouts.emplace_back(v2); 
-		vouts.emplace_back(v3);
-		indices_out.emplace_back(indices[i]); 
-		indices_out.emplace_back(indices[i + 1]);
-		indices_out.emplace_back(indices[i + 2]);
+		ProjDivid(vs_v.ScreenPos);
+		Ndc2Screen(vs_v.ScreenPos, camera.GetScreenMatrix());
+		projVouts.emplace_back(vs_v);
 	}
-
-	std::cout << "index count: " << indexCount << std::endl;
-	std::cout << "indices count: " << indices.size() << std::endl;
 
 	for (auto& v : vouts)
 	{
 		std::cout << "v =(" << v.worldPos.x() << ", " << v.worldPos.y() << ", " << v.worldPos.z() << ")" << std::endl;
 		std::cout << "v =(" << v.ScreenPos.x() << "," << v.ScreenPos.y() << ")" << std::endl;
 		std::cout << "------------------ padding ------------------" << std::endl;
-		//DrawPoint({ v.ScreenPos.x(), v.ScreenPos.y()});
 	}
 
-	// 光栅化
+	std::cout << "index count: " << indexCount << std::endl;
+	std::cout << "indices count: " << indices.size() << std::endl;
+
+	// 光栅化，需要先进行视椎体剔除
+	// 
+	// Tips: 这里暂时剔除整个面
 	int cnt = 0;
-	for (int i = 0; i < indices_out.size(); i += 3)
-	{
+	for (int i = 0; i < indices.size(); i += 3)
+	{		
+		auto& v1 = vouts[indices[i]];
+		auto& v2 = vouts[indices[i + 1]];
+		auto& v3 = vouts[indices[i + 2]];
+
+		if (CvvCull(v1.ScreenPos, camera) || CvvCull(v2.ScreenPos, camera) || CvvCull(v3.ScreenPos, camera)) continue;
+
 		cnt++;
+		
+		auto& projV1 = projVouts[indices[i]];
+		auto& projV2 = projVouts[indices[i + 1]];
+		auto& projV3 = projVouts[indices[i + 2]];
+
 		DrawLine
 		(
-			{ vouts[indices[i]].ScreenPos.x(), vouts[indices[i]].ScreenPos.y() },
-			{ vouts[indices[i + 1]].ScreenPos.x(), vouts[indices[i + 1]].ScreenPos.y() },
-			{ vouts[indices[i + 2]].ScreenPos.x(), vouts[indices[i + 2]].ScreenPos.y() }
+			{ projV1.ScreenPos.x(), projV1.ScreenPos.y() },
+			{ projV2.ScreenPos.x(), projV2.ScreenPos.y() },
+			{ projV3.ScreenPos.x(), projV3.ScreenPos.y() }
 		);
 
-		DrawTriangle(vouts[indices[i]], vouts[indices[i+1]], vouts[indices[i + 2]], shader);
+		//DrawTriangle(projV1, projV2, projV3, shader);
 
-		/*DrawPoint
+	/*	DrawPoint
 		(
 			{ vouts[indices[i]].ScreenPos.x(), vouts[indices[i]].ScreenPos.y() },
 			{ vouts[indices[i + 1]].ScreenPos.x(), vouts[indices[i + 1]].ScreenPos.y() },
 			{ vouts[indices[i + 2]].ScreenPos.x(), vouts[indices[i + 2]].ScreenPos.y() }
 		);*/
 	}
-	std::cout << "faces : " << cnt << std::endl;
+	std::cout << "rendered faces : " << cnt << std::endl;
 }
 
 void Renderer::OutPut()
@@ -227,7 +222,7 @@ bool Renderer::CvvCull(const Eigen::Vector4f v, Camera camera)
 	float z = v.z();
 	float w = abs(v.w());
 
-	std::cout << "cvvcull :" << "x = " << x << " y = " << y << " z = " << z << " w = " << w << std::endl;
+	std::cout << "cvv cull :" << "x = " << x << " y = " << y << " z = " << z << " w = " << w << std::endl;
 
 	if ((x < -w || x > w) || (y < -w || y > w) || (z < -w || z > w))
 		return true;
@@ -248,7 +243,7 @@ void Renderer::Ndc2Screen(Eigen::Vector4f& screenPos, Eigen::Matrix4f screenMatr
 	// 要把w归位1才能正常引用屏幕空间矩阵
 	float w = screenPos.w();
 	screenPos.w() = 1;
-	std::cout << "NDC screenMatrix:\n" << screenMatrix << std::endl;
+	//std::cout << "NDC screenMatrix:\n" << screenMatrix << std::endl;
 	screenPos = screenMatrix * screenPos;
 	screenPos.w() = w;
 	//std::cout << "screenPos.x = " << screenPos.x() << " screenPos.y = " << screenPos.y() << " screenPos.z = " << screenPos.z() << " screenPos.w = " << screenPos.w() << std::endl;

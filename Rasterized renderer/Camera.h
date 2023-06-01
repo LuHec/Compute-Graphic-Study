@@ -3,8 +3,6 @@
 #include <Eigen>
 #include "Transform.h"
 
-constexpr float PI = 3.1415926;
-
 class Camera
 {
 public:

@@ -1,4 +1,5 @@
 #include "Component.h"
+#include "MyMath.h"
 #include <iostream>
 
 Component::Component()
@@ -25,8 +26,12 @@ void Component::UpdateMatrix()
 {
 	// 构造矩阵
 	// 注意这个傻屌Eigen库double 和 float不能互相运算，后面AngleAxisf不能用AngleAxisd
-	Eigen::Vector3f Eurler = transform.rotation;
-
+	// 要先转成弧度
+	float radiansX = transform.rotation.x() * MyMath::PI * MyMath::div180;
+	float radiansY = transform.rotation.y() * MyMath::PI * MyMath::div180;
+	float radiansZ = transform.rotation.z() * MyMath::PI * MyMath::div180;
+	Eigen::Vector3f Eurler(radiansX, radiansY, radiansZ);
+		
 	// 构造顺序为z，y，x
 	Eigen::Matrix3f rotation_3;
 	rotation_3 =
@@ -34,7 +39,7 @@ void Component::UpdateMatrix()
 		Eigen::AngleAxisf(Eurler[1], Eigen::Vector3f::UnitY()) *
 		Eigen::AngleAxisf(Eurler[0], Eigen::Vector3f::UnitX());
 	std::cout << 
-		"rotation matrix :\n" <<
+		"rotation matrix x:\n" <<
 		rotation_3 << std::endl;
 
 	Eigen::Matrix4f rotation;

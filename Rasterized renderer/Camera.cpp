@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "MyMath.h"
 
 Camera::Camera(Transform trans, int wid, int hei, float near, float far, float fov) : transform(trans), width(wid), height(hei), zNear(near), zFar(far), eye_fov(fov)
 {
@@ -80,7 +81,7 @@ void Camera::SetView()
 
 void Camera::SetProj()
 {
-	float fov_2_radians = eye_fov / 2 * PI / 180;
+	float fov_2_radians = eye_fov / 2 * MyMath::PI / 180;
 
 	float t = tan(fov_2_radians) * -zNear;
 	float b = -t;

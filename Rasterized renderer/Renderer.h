@@ -32,6 +32,7 @@ private:
 	void UpdateObjectBuffer(GameObject*);
 	void DrawRenderItems(); // 逐个绘制items
 	void DrawInstanceIndexd(const Mesh& mesh, const Material& mat); // Draw Call
+	void DrawGizmos();
 	void OutPut();
 
 	void ShadowReceive();	// 阴影收集

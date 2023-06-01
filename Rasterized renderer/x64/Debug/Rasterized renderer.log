@@ -1,13 +1,9 @@
 ﻿C:\VS2022\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(514,5): warning MSB8028: 中间目录(x64\Debug\)包含从另一个项目(Rasterized renderer.vcxproj)共享的文件。   这会导致错误的清除和重新生成行为。
-  GameObject.cpp
+  源.cpp
 D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\Half.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
 D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\BFloat16.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
 D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\GenericPacketMathFunctions.h(676,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
 D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Light.h(8): warning C4091: “static ”: 没有声明变量时忽略“Light::LightType”的左侧
-  IShader.cpp
-D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\Half.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\BFloat16.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-D:\Code extern tools\eigen-3.4.0\Eigen\src\Core\arch\Default\GenericPacketMathFunctions.h(676,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
-D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\Light.h(8): warning C4091: “static ”: 没有声明变量时忽略“Light::LightType”的左侧
-  正在生成代码...
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\MyMath.h(5,32): warning C4305: “初始化”: 从“double”到“const float”截断
+D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\MyMath.h(6,41): warning C4305: “初始化”: 从“double”到“const float”截断
   Rasterized renderer.vcxproj -> D:\ProgramFIle\GitHub Publish\Compute-Graphic\Rasterized renderer\x64\Debug\Rasterlized renderer.exe
