@@ -32,7 +32,7 @@ void Camera::SetFov(float fov) { eye_fov = fov; }
 
 void Camera::SetNearFar(float near, float far) { zNear = near; zFar = far; }
 
-void Camera::SetDirection(Eigen::Vector3f dir) { camera_dir = dir; }
+void Camera::SetDirection(Eigen::Vector3f dir) { camera_dir = dir.normalized(); }
 
 Eigen::Matrix4f Camera::GetViewMatrix() 
 {
@@ -83,6 +83,7 @@ void Camera::SetProj()
 {
 	float fov_2_radians = eye_fov / 2 * MyMath::PI / 180;
 
+	// 深度值为负，近平面需要取负值
 	float t = tan(fov_2_radians) * -zNear;
 	float b = -t;
 	float r = t * aspect;
@@ -93,6 +94,7 @@ void Camera::SetProj()
 		0, 2 * zNear / (t - b), 0, 0,
 		0, 0, -(zFar + zNear) / (zFar - zNear), -(2 * zNear * zFar) / (zFar - zNear),
 		0, 0, 1, 0;
+
 }
 
 void Camera::SetScreen()

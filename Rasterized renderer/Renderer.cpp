@@ -87,6 +87,11 @@ void Renderer::DrawInstanceIndexd(const Mesh& mesh, const Material& mat)
 	const std::vector<vertex>& vertices = mesh.vertices;
 	const std::vector<int>& indices = mesh.indices;
 
+	for (auto& v : vertices)
+	{
+		std::cout << "v.worldPos =(" << v.pos << ")" << std::endl;
+	}
+
 	// 调用shader顶点着色器,然后变换到ndc，然后到屏幕空间
 	for (const auto& v : vertices)
 	{
@@ -100,8 +105,8 @@ void Renderer::DrawInstanceIndexd(const Mesh& mesh, const Material& mat)
 
 	for (auto& v : vouts)
 	{
-		std::cout << "v =(" << v.worldPos.x() << ", " << v.worldPos.y() << ", " << v.worldPos.z() << ")" << std::endl;
-		std::cout << "v =(" << v.ScreenPos.x() << "," << v.ScreenPos.y() << ")" << std::endl;
+		std::cout << "v.worldPos =(" << v.worldPos.x() << ", " << v.worldPos.y() << ", " << v.worldPos.z() << ")" << std::endl;
+		std::cout << "v.ScreenPos =(" << v.ScreenPos.x() << "," << v.ScreenPos.y() << ")" << std::endl;
 		std::cout << "------------------ padding ------------------" << std::endl;
 	}
 
@@ -118,6 +123,7 @@ void Renderer::DrawInstanceIndexd(const Mesh& mesh, const Material& mat)
 		auto& v2 = vouts[indices[i + 1]];
 		auto& v3 = vouts[indices[i + 2]];
 
+		// 此时的ScreenPos还是ProjPos
 		if (CvvCull(v1.ScreenPos, camera) || CvvCull(v2.ScreenPos, camera) || CvvCull(v3.ScreenPos, camera)) continue;
 
 		cnt++;
@@ -126,14 +132,14 @@ void Renderer::DrawInstanceIndexd(const Mesh& mesh, const Material& mat)
 		auto& projV2 = projVouts[indices[i + 1]];
 		auto& projV3 = projVouts[indices[i + 2]];
 
-		DrawLine
+		/*DrawLine
 		(
 			{ projV1.ScreenPos.x(), projV1.ScreenPos.y() },
 			{ projV2.ScreenPos.x(), projV2.ScreenPos.y() },
 			{ projV3.ScreenPos.x(), projV3.ScreenPos.y() }
-		);
+		);*/
 
-		//DrawTriangle(projV1, projV2, projV3, shader);
+		DrawTriangle(projV1, projV2, projV3, shader);
 
 	/*	DrawPoint
 		(
@@ -174,8 +180,8 @@ void Renderer::OutPut()
 	{
 		for (int i = 0; i < width; ++i)
 		{
-			auto z = (*z_buffer)[i][j];
-			zout <<  int(z * 255) << ' ' << 0 << ' ' << 0 << '\n';
+			int z = (*z_buffer)[i][j] * 255;
+			zout <<  z << ' ' << z << ' ' << z << '\n';
 		}
 	}
 
@@ -192,6 +198,7 @@ void Renderer::LoadObject(GameObject* object)
 void Renderer::SetCamera()
 {
 	camera = Camera({ {0, 0, -10} }, width, height, nearPlane, farPlane, fov);
+	camera.SetDirection(Eigen::Vector3f(0, 0, -1));
 }
 
 void Renderer::SetBuffers()
@@ -238,7 +245,7 @@ void Renderer::ProjDivid(Eigen::Vector4f& screenPos)
 	//std::cout << "NDCPos.x = " << screenPos.x() << " NDCPos.y = " << screenPos.y() << " NDCPos.z = " << screenPos.z() << " NDCPos.w = " << screenPos.w() << std::endl;
 }
 
-void Renderer::Ndc2Screen(Eigen::Vector4f& screenPos, Eigen::Matrix4f screenMatrix)
+void Renderer::Ndc2Screen(Eigen::Vector4f& screenPos, const Eigen::Matrix4f& screenMatrix)
 {
 	// 要把w归位1才能正常引用屏幕空间矩阵
 	float w = screenPos.w();
@@ -287,7 +294,7 @@ void Renderer::SetPixel(int x, int y, Color color)
 	(*frame_buffer)[x][y] = {color.x, color.y, color.z};
 }
 
-void Renderer::DrawLine(vector2 v1, vector2 v2, vector2 v3)
+void Renderer::DrawLine(const vector2& v1, const vector2& v2, const vector2& v3)
 {
 	MyMath::Bresenham(v1.x + 0.5, v1.y + 0.5, v2.x + 0.5, v2.y + 0.5, frame_buffer);
 	//MyMath::Bresenham(v1.x, v1.y, v3.x, v3.y, frame_buffer);
@@ -297,12 +304,12 @@ void Renderer::DrawLine(vector2 v1, vector2 v2, vector2 v3)
 	//MyMath::Bresenham(v3.x, v3.y, v2.x, v2.y, frame_buffer);
 }
 
-void Renderer::DrawPoint(vector2 v)
+void Renderer::DrawPoint(const vector2& v)
 {
 	(*frame_buffer)[(int)v.x][(int)v.y] = { 255, 255, 255 };
 }
 
-void Renderer::DrawPoint(vector2 v1, vector2 v2, vector2 v3)
+void Renderer::DrawPoint(const vector2& v1, const vector2& v2, const vector2& v3)
 {
 	std::cout << "v1 = （" << (int)v1.x << ',' << v1.y << ")" << std::endl;
 	std::cout << "v2 = （" << (int)v2.x << ',' << v2.y << ")" << std::endl;

@@ -26,6 +26,9 @@ GameObject* AddTraingle()
 	rotation.y() = 0;
 	rotation.z() = 0;
 
+	auto& pos = gameobject->component.transform.position;
+	pos.x() = -3;
+
 	return gameobject;
 }
 
@@ -104,8 +107,8 @@ GameObject* AddCube()
 	i[33] = 20; i[34] = 22; i[35] = 23;
 
 	auto& rotation = gameobject->component.transform.rotation;
-	rotation.x() = 45;
-	rotation.y() = 0;
+	rotation.x() = 0;
+	rotation.y() = 45;
 	rotation.z() = 0;
 
 	return gameobject;
@@ -121,10 +124,10 @@ GameObject* AddPyramid()
 	v.resize(5);
 	i.resize(18);
 
-	float w = 5.0f;
-	float h = 5.0f;
+	float w = 2.0f;
+	float h = 2.0f;
 
-	v[0] = vertex(-w , 0, w, 0, 0, 0);
+	v[0] = vertex(-w, 0, w, 0, 0, 0);
 	v[1] = vertex(w, 0, w, 0, 0, 0);
 	v[2] = vertex(w, 0, -w, 0, 0, 0);
 	v[3] = vertex(-w, 0, -w, 0, 0, 0);
@@ -138,9 +141,12 @@ GameObject* AddPyramid()
 	i[15] = 0; i[16] = 1; i[17] = 2;
 
 	auto& rotation = gameobject->component.transform.rotation;
-	rotation.x() = 80;
+	rotation.x() = 0;
 	rotation.y() = 0;
-	rotation.z() = 0;
+	rotation.z() = 45;
+
+	auto& pos = gameobject->component.transform.position;
+	pos.x() = 5;
 
 	return gameobject;
 }
@@ -148,14 +154,15 @@ GameObject* AddPyramid()
 int main()
 {
 	// 左手系，y轴向上，[-1, 1]，深度为负值
-	Renderer renderer(400, 400, 0.5f, 1000.0f, 90.0f);
+	Renderer renderer(800, 800, 0.5f, 1000.0f, 90.0f);
 
-	//renderer.LoadObject(AddTraingle());
+	renderer.LoadObject(AddTraingle());
 	renderer.LoadObject(AddCube());
-	//renderer.LoadObject(AddPyramid());
-	renderer.SetCamera(.0f, 0.0f, -10.0f);
+	renderer.LoadObject(AddPyramid());
+	renderer.SetCamera(.0f, 0.0f, -8.0f);
 	renderer.Draw();
 }
 
 // TODO
-// 修复深度
+// 修复深度,ndc[-1, 1]，输出[0, 1]
+// CVV和NDC是一个东西，需要修改CULL部分
