@@ -1,5 +1,4 @@
 #include "Renderer.h"
-
 // 函数部分
 
 void Renderer::Draw()
@@ -15,6 +14,16 @@ void Renderer::SetCamera(const float x, const float y, const float z)
 	camera.transform.position.x() = x;
 	camera.transform.position.y() = y;
 	camera.transform.position.z() = z;
+}
+
+void Renderer::SetRenderPso(RenderPSO pso)
+{
+	renderPso = pso;
+}
+
+void Renderer::SetRenderPso(RenderState WireframeState, RenderState TriangleState, RenderState PointState)
+{
+	renderPso = { WireframeState, TriangleState, PointState };
 }
 
 Renderer::Renderer() : width(400), height(400), nearPlane(0.5f), farPlane(1000.0f), aspect(1) 
@@ -92,7 +101,9 @@ void Renderer::DrawInstanceIndexd(const Mesh& mesh, const Material& mat)
 		std::cout << "v.worldPos =(" << v.pos << ")" << std::endl;
 	}
 
-	// 调用shader顶点着色器,然后变换到ndc，然后到屏幕空间
+	// 调用shader顶点着色器,然后变换到ndc
+	// 需要存储进行齐次除法变换的和没有进行过的
+	// 后续使用没进行齐次除法的进行cvv剔除，通过后再使用进行过齐次除法并变换到屏幕空间的坐标画三角形
 	for (const auto& v : vertices)
 	{
 		auto vs_v = shader->VS(v);
@@ -132,21 +143,31 @@ void Renderer::DrawInstanceIndexd(const Mesh& mesh, const Material& mat)
 		auto& projV2 = projVouts[indices[i + 1]];
 		auto& projV3 = projVouts[indices[i + 2]];
 
-		/*DrawLine
-		(
-			{ projV1.ScreenPos.x(), projV1.ScreenPos.y() },
-			{ projV2.ScreenPos.x(), projV2.ScreenPos.y() },
-			{ projV3.ScreenPos.x(), projV3.ScreenPos.y() }
-		);*/
+		if (RenderState::ON == renderPso.TriangleState)
+		{
+			DrawTriangle(projV1, projV2, projV3, shader);
+		}
 
-		DrawTriangle(projV1, projV2, projV3, shader);
-
-	/*	DrawPoint
-		(
-			{ vouts[indices[i]].ScreenPos.x(), vouts[indices[i]].ScreenPos.y() },
-			{ vouts[indices[i + 1]].ScreenPos.x(), vouts[indices[i + 1]].ScreenPos.y() },
-			{ vouts[indices[i + 2]].ScreenPos.x(), vouts[indices[i + 2]].ScreenPos.y() }
-		);*/
+		if (RenderState::ON == renderPso.PointState)
+		{
+			DrawPoint
+			(
+				{ vouts[indices[i]].ScreenPos.x(), vouts[indices[i]].ScreenPos.y() },
+				{ vouts[indices[i + 1]].ScreenPos.x(), vouts[indices[i + 1]].ScreenPos.y() },
+				{ vouts[indices[i + 2]].ScreenPos.x(), vouts[indices[i + 2]].ScreenPos.y() }
+			);
+		}
+		
+		if (RenderState::ON == renderPso.WireframeState)
+		{
+			DrawLine
+			(
+				{ projV1.ScreenPos.x(), projV1.ScreenPos.y() },
+				{ projV2.ScreenPos.x(), projV2.ScreenPos.y() },
+				{ projV3.ScreenPos.x(), projV3.ScreenPos.y() }
+			);
+		}
+		
 	}
 	std::cout << "rendered faces : " << cnt << std::endl;
 }

@@ -10,6 +10,20 @@
 #include <cstdlib>
 #include <stdlib.h>
 
+
+enum class RenderState
+{
+	OFF = 0,
+	ON = 1
+};
+
+struct RenderPSO
+{
+	RenderState WireframeState = RenderState::OFF;
+	RenderState TriangleState = RenderState::ON;
+	RenderState PointState = RenderState::OFF;
+};
+
 class Renderer
 {
 public:
@@ -20,6 +34,8 @@ public:
 	void LoadObject(GameObject* object);		// ´«ÈëObject
 	void Draw();
 	void SetCamera(const float x, const float y, const float z);
+	void SetRenderPso(RenderPSO pso);
+	void SetRenderPso(RenderState WireframeState, RenderState TriangleState, RenderState PointState);
 
 // Render Pipeline
 // Space: obj->world->view->clip->cvv->ndc->screen
@@ -78,6 +94,10 @@ private:
 	Cbuffer globalCbuffer;
 	std::vector<GameObject*> objList;
 	std::vector<GameObject*> renderList;
+
+// RenderState
+private:
+	RenderPSO renderPso;
 
 public:
 	static const std::string output_base_path;

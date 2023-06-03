@@ -1,4 +1,5 @@
 #include <iostream>
+//#include <windows.h>
 #include <Eigen>
 #include "Renderer.h"
 #include "IShader.h"
@@ -124,8 +125,8 @@ GameObject* AddPyramid()
 	v.resize(5);
 	i.resize(18);
 
-	float w = 2.0f;
-	float h = 2.0f;
+	float w = 1.5f;
+	float h = 4.0f;
 
 	v[0] = vertex(-w, 0, w, 0, 0, 0);
 	v[1] = vertex(w, 0, w, 0, 0, 0);
@@ -142,8 +143,8 @@ GameObject* AddPyramid()
 
 	auto& rotation = gameobject->component.transform.rotation;
 	rotation.x() = 0;
-	rotation.y() = 0;
-	rotation.z() = 45;
+	rotation.y() = 45;
+	rotation.z() = 15;
 
 	auto& pos = gameobject->component.transform.position;
 	pos.x() = 5;
@@ -154,7 +155,8 @@ GameObject* AddPyramid()
 int main()
 {
 	// 左手系，y轴向上，[-1, 1]，深度为负值
-	Renderer renderer(800, 800, 0.5f, 1000.0f, 90.0f);
+	Renderer renderer(800, 800, 0.5f, 1000.0f, 120.0f);
+	renderer.SetRenderPso(RenderState::ON, RenderState::ON, RenderState::OFF);
 
 	renderer.LoadObject(AddTraingle());
 	renderer.LoadObject(AddCube());
@@ -165,4 +167,4 @@ int main()
 
 // TODO
 // 修复深度,ndc[-1, 1]，输出[0, 1]
-// CVV和NDC是一个东西，需要修改CULL部分
+// 需要修改CULL部分,fov出现问题

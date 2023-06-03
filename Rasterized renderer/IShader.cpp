@@ -2,15 +2,17 @@
 
 VertexOut PhongShader::VS(vertex v)
 {
-    // 以史为鉴！牢记教训！警惕前行！orz
+    // orz 以史为鉴！牢记教训！警惕前行！orz
     // 
     // Eigen::Vector4f mPos(v.pos.x(), v.pos.y(), v.pos.x(), 1);
     // 
-    // 以史为鉴！牢记教训！警惕前行！orz
+    // orz 以史为鉴！牢记教训！警惕前行！orz
     Eigen::Vector4f mPos(v.pos.x(), v.pos.y(), v.pos.z(), 1);
     Eigen::Vector4f normal(v.normal.x(), v.normal.y(), v.normal.z(), 0);
 
     PhongVertexOut vout;
+    
+    // 实际上是CVV坐标
     vout.ScreenPos = cbuffer.ProjectMatrix * cbuffer.ViewMatrix * obuffer.WorldMatrix * mPos;
     vout.worldPos = (obuffer.WorldMatrix * mPos).head<3>();
     vout.uv = v.uv;
