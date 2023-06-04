@@ -349,3 +349,23 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+Rasterized renderer/x64/Debug/GameObject.obj
+Rasterized renderer/x64/Debug/Camera.obj
+Rasterized renderer/x64/Debug/Component.obj
+Rasterized renderer/x64/Debug/GameObject.obj
+Rasterized renderer/x64/Debug/IShader.obj
+Rasterized renderer/x64/Debug/Material.obj
+Rasterized renderer/x64/Debug/MyMath.obj
+Rasterized renderer/x64/Debug/Rasterized renderer.log
+Rasterized renderer/x64/Debug/Rasterli.d2a9031c.tlog/CL.command.1.tlog
+Rasterized renderer/x64/Debug/Rasterli.d2a9031c.tlog/CL.read.1.tlog
+Rasterized renderer/x64/Debug/Rasterli.d2a9031c.tlog/CL.write.1.tlog
+Rasterized renderer/x64/Debug/Rasterli.d2a9031c.tlog/link.command.1.tlog
+Rasterized renderer/x64/Debug/Rasterli.d2a9031c.tlog/link.read.1.tlog
+Rasterized renderer/x64/Debug/Rasterlized renderer.exe
+Rasterized renderer/x64/Debug/Rasterlized renderer.ilk
+Rasterized renderer/x64/Debug/Rasterlized renderer.pdb
+Rasterized renderer/x64/Debug/Renderer.obj
+Rasterized renderer/x64/Debug/vc143.idb
+Rasterized renderer/x64/Debug/vc143.pdb
+Rasterized renderer/x64/Debug/源.obj
