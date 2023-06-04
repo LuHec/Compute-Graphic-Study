@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Eigen>
+#include <windows.h>
 #include "GameObject.h"
 #include "Resource.h"
 #include "Camera.h"
@@ -31,8 +32,9 @@ public:
 	Renderer(int width, int height, float nearPlan, float farPlan, float fov);
 	~Renderer();
 
+	void SetHDC(HDC ohdc, HDC oscreenHDC);
 	void LoadObject(GameObject* object);		// 传入Object
-	void Draw();
+	void Update();
 	void SetCamera(const float x, const float y, const float z);
 	void SetRenderPso(RenderPSO pso);
 	void SetRenderPso(RenderState WireframeState, RenderState TriangleState, RenderState PointState);
@@ -42,14 +44,15 @@ public:
 // Op: (vertex shader)mvp->proj->||cvv clip->/w ndc -> screen ||-> Triangle Traversal + (fragment) + per fragment(ztest)
 private:
 	void Init();			// 初始化
-	void Clear();			// 清空缓冲区 
-	void Update();
+	void Draw();
 	void UpdateConstantBuffer();
 	void UpdateObjectBuffer(GameObject*);
 	void DrawRenderItems(); // 逐个绘制items
 	void DrawInstanceIndexd(const Mesh& mesh, const Material& mat); // Draw Call
 	void DrawGizmos();
 	void OutPut();
+	void WinOutPut();
+	void Clear();			// 清空缓冲区 
 
 	void ShadowReceive();	// 阴影收集
 	
@@ -59,7 +62,7 @@ private:
 	bool Zwrite_test(int x, int y, float depth);
 	bool InsideTriangle(float x, float y, const std::vector<Eigen::Vector3f>& tri);
 
-	void SetPixel(int x, int y, Color color);
+	void DrawPixel(int x, int y, const Color& color);
 	void DrawLine(const vector2& v1, const vector2& v2, const vector2& v3);
 	void DrawPoint(const vector2& v);
 	void DrawPoint(const vector2& v1, const vector2& v2, const vector2& v3);
@@ -86,6 +89,10 @@ private:
 	Eigen::Vector4f m_screen;
 	Eigen::Vector4f m_viewProj;
 
+// Windows
+private:
+	HDC hdc;
+	HDC screenHDC;
 
 // Object Members
 private:

@@ -83,17 +83,20 @@ void Camera::SetProj()
 {
 	float fov_2_radians = eye_fov / 2 * MyMath::PI / 180;
 
-	// 深度值为负，近平面需要取负值
-	float t = tan(fov_2_radians) * -zNear;
+	float n = zNear;
+	float f = zFar;
+
+	float t = tan(fov_2_radians) * n;
 	float b = -t;
 	float r = t * aspect;
 	float l = -r;
 
+	// 左手坐标系投影矩阵
 	m_proj <<
-		2 * zNear / (r - l), 0, 0, 0,
-		0, 2 * zNear / (t - b), 0, 0,
-		0, 0, -(zFar + zNear) / (zFar - zNear), -(2 * zNear * zFar) / (zFar - zNear),
-		0, 0, 1, 0;
+		2 * n / (r - l), 0, 0, 0,
+		0, 2 * n / (t - b), 0, 0,
+		0, 0, (f + n) / (f - n), -(2 * n * f) / (f - n),
+		0, 0, -1, 0;
 
 }
 

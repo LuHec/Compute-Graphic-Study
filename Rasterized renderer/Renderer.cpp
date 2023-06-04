@@ -3,10 +3,9 @@
 
 void Renderer::Draw()
 {
-	Update();
-	CpuCullAndUpdateObjBuffers();
 	DrawRenderItems();
-	OutPut();
+	WinOutPut();
+	//OutPut();
 }
 
 void Renderer::SetCamera(const float x, const float y, const float z)
@@ -31,7 +30,7 @@ Renderer::Renderer() : width(400), height(400), nearPlane(0.5f), farPlane(1000.0
 	Init();
 }
 
-Renderer::Renderer(int w, int h, float near, float far, float fov) : width(w), height(h), nearPlane(near), farPlane(far), fov(fov), aspect(w/h)
+Renderer::Renderer(int w, int h, float znear, float zfar, float fov) : width(w), height(h), nearPlane(znear), farPlane(zfar), fov(fov), aspect(w/h)
 { 
 	Init();
 }
@@ -50,10 +49,14 @@ void Renderer::Init()
 
 void Renderer::Update()
 {
+	Clear();
+
 	UpdateConstantBuffer();
 	std::cout << "view: \n" << globalCbuffer.ViewMatrix << std::endl;
-	std::cout << "ProjectMatrix : \n"  << globalCbuffer.ProjectMatrix << std::endl;
+	std::cout << "ProjectMatrix : \n" << globalCbuffer.ProjectMatrix << std::endl;
 	std::cout << "screen: \n" << globalCbuffer.ScreenMatrix << std::endl;
+	CpuCullAndUpdateObjBuffers();
+	Draw();
 }
 
 void Renderer::UpdateConstantBuffer()
@@ -75,7 +78,7 @@ void Renderer::UpdateObjectBuffer(GameObject* gameobject)
 
 void Renderer::DrawRenderItems()
 {
-	for (const GameObject* obj : renderList)
+	for (const GameObject* obj : objList)
 	{
 		DrawInstanceIndexd(obj->mesh, obj->material);
 	}
@@ -209,6 +212,31 @@ void Renderer::OutPut()
 	std::cout << "end" << std::endl;
 }
 
+void Renderer::WinOutPut()
+{
+	// 双重缓冲
+	BitBlt(hdc, 0, 0, width, height, screenHDC, 0, 0, SRCCOPY);
+}
+
+void Renderer::Clear()
+{
+	BitBlt(screenHDC, 0, 0, width, height, NULL, NULL, NULL, WHITENESS);
+
+	for (int i = 0; i < z_buffer->height; i++)
+	{
+		for (int j = 0; j < z_buffer->width; j++)
+		{
+			(*z_buffer)[i][j] = 1;
+		}
+	}
+}
+
+
+void Renderer::SetHDC(HDC ohdc, HDC oscreenHDC)
+{
+	hdc = ohdc;
+	screenHDC = oscreenHDC;
+}
 
 void Renderer::LoadObject(GameObject* object)
 {
@@ -219,13 +247,13 @@ void Renderer::LoadObject(GameObject* object)
 void Renderer::SetCamera()
 {
 	camera = Camera({ {0, 0, -10} }, width, height, nearPlane, farPlane, fov);
-	camera.SetDirection(Eigen::Vector3f(0, 0, -1));
+	camera.SetDirection(Eigen::Vector3f(0, 0, 1));
 }
 
 void Renderer::SetBuffers()
 {
 	frame_buffer = new Buffer<vector3>(width, height, {0, 0, 0});
-	z_buffer = new Buffer<float>(width, height, 1.0f);
+	z_buffer = new Buffer<float>(width, height, .0f);
 
 	Eigen::Matrix4f ViewMatrix;
 	Eigen::Matrix4f ProjectMatrix;
@@ -279,8 +307,7 @@ void Renderer::Ndc2Screen(Eigen::Vector4f& screenPos, const Eigen::Matrix4f& scr
 
 bool Renderer::Zwrite_test(int x, int y, float depth)
 {
-	depth *= -1;
-	// depth是负的，要转成正的
+	// depth是正常的
 	//std::cout << "depth : " << depth << std::endl;
 	if (depth < (*z_buffer)[x][y])
 	{
@@ -310,9 +337,10 @@ bool Renderer::InsideTriangle(float x, float y, const std::vector<Eigen::Vector3
 	}
 }
 
-void Renderer::SetPixel(int x, int y, Color color)
+void Renderer::DrawPixel(int x, int y, const Color& color)
 {
-	(*frame_buffer)[x][y] = {color.x, color.y, color.z};
+	//(*frame_buffer)[x][y] = {color.x, color.y, color.z};
+	SetPixel(screenHDC, x, y, RGB(color.x, color.y, color.z));
 }
 
 void Renderer::DrawLine(const vector2& v1, const vector2& v2, const vector2& v3)
@@ -338,9 +366,9 @@ void Renderer::DrawPoint(const vector2& v1, const vector2& v2, const vector2& v3
 
 	std::cout << "---------- padding ----------" << std::endl;
 
-	(*frame_buffer)[(int)v1.x][(int)v1.y] = { 255, 255, 255 };
-	(*frame_buffer)[(int)v2.x][(int)v2.y] = { 255, 255, 255 };
-	(*frame_buffer)[(int)v3.x][(int)v3.y] = { 255, 255, 255 };
+	DrawPixel((int)v1.x, (int)v1.y, { 255, 255, 255 });
+	DrawPixel((int)v2.x, (int)v2.y, { 255, 255, 255 });
+	DrawPixel((int)v3.x, (int)v3.y, { 255, 255, 255 });
 }
 
 // TODO
@@ -383,7 +411,7 @@ void Renderer::DrawTriangle(const VertexOut& v1, const VertexOut& v2, const Vert
 				// 深度测试通过写入像素
 				if (Zwrite_test(x, y, out_interpolated.ScreenPos.z()));
 				{
-					SetPixel(x, y, shader->PS(out_interpolated));
+					DrawPixel(x, y, shader->PS(out_interpolated));
 				}
 			}
 		}
@@ -398,7 +426,6 @@ void Renderer::CpuCullAndUpdateObjBuffers()
 	for (GameObject* o : objList)
 	{
 		UpdateObjectBuffer(o);
-		renderList.emplace_back(o);
 	}
 }
 
