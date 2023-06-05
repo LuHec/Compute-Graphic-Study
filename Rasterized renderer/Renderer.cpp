@@ -186,6 +186,9 @@ void Renderer::OutPut()
 		<< width << ' ' << height << "\n255\n";
 
 	// 要注意！！物体的屏幕坐标为(x, y)，但是绘制是从左上角开始，且向右边写入的，所以要求以列为外循环
+	// -- Caution !! --
+	// 此处ppm输出已被废弃，作者懒得思考ppm输出的坐标了
+	// -- Caution !! --
 	for (int j = height - 1; j >= 0; --j)
 	{
 		for (int i = 0; i < width; ++i)
@@ -222,11 +225,12 @@ void Renderer::Clear()
 {
 	BitBlt(screenHDC, 0, 0, width, height, NULL, NULL, NULL, WHITENESS);
 
+	// 访问时先高再宽
 	for (int i = 0; i < z_buffer->height; i++)
 	{
 		for (int j = 0; j < z_buffer->width; j++)
 		{
-			(*z_buffer)[i][j] = 1;
+			(*z_buffer)[i][j] = -1;
 		}
 	}
 }
@@ -308,10 +312,16 @@ void Renderer::Ndc2Screen(Eigen::Vector4f& screenPos, const Eigen::Matrix4f& scr
 bool Renderer::Zwrite_test(int x, int y, float depth)
 {
 	// depth是正常的
-	//std::cout << "depth : " << depth << std::endl;
-	if (depth < (*z_buffer)[x][y])
+	// std::cout << "depth : " << depth << std::endl;
+	// 要注意，虽然习惯上坐标为x,y对应横坐标和竖坐标，但是c++数组读取是先高再宽，访问时第一个坐标应该是y
+	//		w/x
+	//     --------
+	// h/y |
+	//     |
+	
+	if (depth > (*z_buffer)[y][x])
 	{
-		(*z_buffer)[x][y] = depth;
+		(*z_buffer)[y][x] = depth;
 		return true;
 	}
 
@@ -409,9 +419,12 @@ void Renderer::DrawTriangle(const VertexOut& v1, const VertexOut& v2, const Vert
 				VertexOut out_interpolated = v1 * bary.alpha + v2 * bary.beta + v3 * bary.gamma;
 
 				// 深度测试通过写入像素
-				if (Zwrite_test(x, y, out_interpolated.ScreenPos.z()));
+				if (x < width && y < height && x >= 0 && y >= 0)
 				{
-					DrawPixel(x, y, shader->PS(out_interpolated));
+					if (Zwrite_test(x, y, out_interpolated.ScreenPos.z()));
+					{
+						DrawPixel(x, y, shader->PS(out_interpolated));
+					}
 				}
 			}
 		}

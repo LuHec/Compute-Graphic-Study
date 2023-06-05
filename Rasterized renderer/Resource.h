@@ -70,11 +70,21 @@ private:
 template <class BufferType>
 Buffer<BufferType>::Buffer(int w, int h, BufferType color) : width(w), height(h)
 {
-	buffer = new BufferType * [width];
+	/*buffer = new BufferType * [width];
 	for (int i = 0; i < width; ++i)
 	{
 		buffer[i] = new BufferType[height];
 		for (int j = 0; j < height; ++j)
+		{
+			buffer[i][j] = color;
+		}
+	}*/
+
+	buffer = new BufferType * [height];
+	for (int i = 0; i < height; ++i)
+	{
+		buffer[i] = new BufferType[width];
+		for (int j = 0; j < width; ++j)
 		{
 			buffer[i][j] = color;
 		}
@@ -90,7 +100,7 @@ BufferType* Buffer<BufferType>::operator[](int i)
 template<class BufferType>
 Buffer<BufferType>::~Buffer()
 {
-	for (int i = 0; i < width; ++i)
+	for (int i = 0; i < height; ++i)
 	{
 		delete[] buffer[i];
 	}

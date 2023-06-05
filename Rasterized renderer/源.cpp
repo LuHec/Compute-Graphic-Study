@@ -3,7 +3,9 @@
 #include "ObjLoader.h"
 #include "Renderer.h"
 #include "IShader.h"
+#include <timeapi.h>
 #include <windows.h>
+#pragma comment( lib,"winmm.lib" )
 #pragma comment (lib, "MSIMG32.LIB")
 
 GameObject* AddTraingle()
@@ -157,9 +159,10 @@ GameObject* AddPyramid()
 HWND ghMainWnd = 0;
 HDC hdc = 0;
 HDC screenHDC = 0;
-int windowHeight = 800;
 int windowWidth = 800;
-Renderer* device = new Renderer(windowHeight, windowWidth, 0.5f, 1000.0f, 120.0f);
+int windowHeight = 800;
+
+Renderer* device = new Renderer(windowWidth, windowHeight, 0.5f, 1000.0f, 120.0f);
 
 // 初始化Win应用代码
 bool InitWindowsApp(HINSTANCE instanceHandle, int show);
@@ -254,14 +257,14 @@ bool InitWindowsApp(HINSTANCE instanceHandle, int show)
 
 	// 设置HDC
 	device->SetRenderPso(RenderState::OFF, RenderState::ON, RenderState::OFF);
-	//device->LoadObject(AddTraingle());
-	//device->LoadObject(AddCube());
-	//device->LoadObject(AddPyramid());
+	device->LoadObject(AddTraingle());
+	device->LoadObject(AddCube());
+	device->LoadObject(AddPyramid());
 	GameObject* model = new GameObject();
-	device->LoadObject(ObjLoader::LoadObj(std::string("Model//test.obj"), model));
+	//device->LoadObject(ObjLoader::LoadObj(std::string("Model//test.obj"), model));
 	auto& rotate = model->component.transform.rotation;
 	rotate.y() = 180;
-	device->SetCamera(.0f, 20.0f, -100.0f);
+	device->SetCamera(.0f, 0.0f, -10.0f);
 	device->SetHDC(hdc, screenHDC);
 
 
@@ -273,10 +276,33 @@ bool InitWindowsApp(HINSTANCE instanceHandle, int show)
 	return true;
 }
 
+float ShowFps()
+{
+	static float fps = 0;
+	static int frameCount = 0;
+
+	static auto currentTime = 0.f;
+	static auto lastTime = 0.f;
+
+
+	frameCount++;
+	currentTime = timeGetTime() * 0.001f;
+
+	if (currentTime - lastTime > 1.f)
+	{
+		fps = (float)frameCount / (currentTime - lastTime);
+		lastTime = currentTime;
+		frameCount = 0;
+	}
+
+	return fps;
+}
 
 int Update()
 {
 	MSG msg = { 0 };
+	
+	char title[128];
 
 	while (msg.message != WM_QUIT)
 	{
@@ -286,9 +312,11 @@ int Update()
 			DispatchMessage(&msg);
 		}
 		else
-		{
-			//MessageBox(0, L"TEST", L"HELLO", MB_OK);
+		{			
 			device->Update();
+
+			sprintf_s(title, 128, "Toy Renderer %.3fFPS", ShowFps());
+			SetWindowTextA(ghMainWnd, title);
 		}
 	}
 
