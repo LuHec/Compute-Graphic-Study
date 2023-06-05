@@ -1,5 +1,6 @@
 #include <iostream>
 #include <Eigen>
+#include "ObjLoader.h"
 #include "Renderer.h"
 #include "IShader.h"
 #include <windows.h>
@@ -253,10 +254,14 @@ bool InitWindowsApp(HINSTANCE instanceHandle, int show)
 
 	// ÉèÖÃHDC
 	device->SetRenderPso(RenderState::OFF, RenderState::ON, RenderState::OFF);
-	device->LoadObject(AddTraingle());
-	device->LoadObject(AddCube());
-	device->LoadObject(AddPyramid());
-	device->SetCamera(.0f, 2.0f, -8.0f);
+	//device->LoadObject(AddTraingle());
+	//device->LoadObject(AddCube());
+	//device->LoadObject(AddPyramid());
+	GameObject* model = new GameObject();
+	device->LoadObject(ObjLoader::LoadObj(std::string("Model//test.obj"), model));
+	auto& rotate = model->component.transform.rotation;
+	rotate.y() = 180;
+	device->SetCamera(.0f, 20.0f, -100.0f);
 	device->SetHDC(hdc, screenHDC);
 
 

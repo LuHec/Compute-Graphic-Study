@@ -54,6 +54,9 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ObjLoader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameObject.h">
@@ -86,7 +89,7 @@
     <ClInclude Include="Color.h">
       <Filter>头文件\Render</Filter>
     </ClInclude>
-    <ClInclude Include="ObjectLoader.h">
+    <ClInclude Include="ObjLoader.h">
       <Filter>头文件\Misc</Filter>
     </ClInclude>
     <ClInclude Include="TextureLoader.h">

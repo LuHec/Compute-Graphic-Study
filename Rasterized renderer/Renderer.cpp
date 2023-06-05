@@ -366,9 +366,9 @@ void Renderer::DrawPoint(const vector2& v1, const vector2& v2, const vector2& v3
 
 	std::cout << "---------- padding ----------" << std::endl;
 
-	DrawPixel((int)v1.x, (int)v1.y, { 255, 255, 255 });
-	DrawPixel((int)v2.x, (int)v2.y, { 255, 255, 255 });
-	DrawPixel((int)v3.x, (int)v3.y, { 255, 255, 255 });
+	DrawPixel((int)v1.x, (int)v1.y, { 255, 255, 255, 1});
+	DrawPixel((int)v2.x, (int)v2.y, { 255, 255, 255, 1});
+	DrawPixel((int)v3.x, (int)v3.y, { 255, 255, 255, 1});
 }
 
 // TODO

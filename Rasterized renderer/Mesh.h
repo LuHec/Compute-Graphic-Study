@@ -7,10 +7,10 @@
 struct vertex
 {
 	vertex() = default;
-	vertex(Eigen::Vector3f p, Eigen::Vector3f n = Eigen::Vector3f(0, 1, 0), Eigen::Vector2f u = Eigen::Vector2f(0, 0)) : pos(p), normal(n), uv(u)
-	{
 
-	}
+	vertex(float px, float py, float pz) : pos(Eigen::Vector3f(px, py, pz)) {}
+
+	vertex(Eigen::Vector3f p, Eigen::Vector3f n = Eigen::Vector3f(0, 1, 0), Eigen::Vector2f u = Eigen::Vector2f(0, 0)) : pos(p), normal(n), uv(u) {}
 
 	vertex(
 		float px, float py, float pz,
