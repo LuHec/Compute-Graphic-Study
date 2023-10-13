@@ -109,5 +109,7 @@
 
 这样写完就能跑图了。
 
+![Image_1697174191633](https://github.com/LuHec/Compute-Graphic-Study/assets/92776720/7ff56bb3-ee11-47b8-b99e-9e376f08aad1)
 
+![image](https://github.com/LuHec/Compute-Graphic-Study/assets/92776720/6f53e096-a251-41e6-8719-c89bb9765fb6)
 
